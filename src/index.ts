@@ -5,7 +5,7 @@ import qrcodeTerminal from 'qrcode-terminal'
 const config = {
   AutoReply: true,
   MakeFriend: true,
-  ChatGPTSessionToken: ''
+  ChatGPTSessionToken: 'eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..gdbcxL8UcvQnbSGt.PK_mlVO6Ox2M2rVwx1vxf1p-nPx4F9NakLuFlfdaMtQIc7o_dL98-dLX4px8hEzHM-BLB3zMc5UOuvcHe-uF0E8Jsw2HOCSUUlUHRWAqhOyKR91mr3Z2zCJEEnC_-VQt_YUfoNwajVg7j6PozznL2MwngBVV10yBUHv-KPPE9ROO6l6VUT675hFEAznSmz0nov_cOo90ze0WIp5BR8oUZbDa1C8atgguQU4G3Gvvrf15iOoAm9MYhVkAi15ouXuIce6v-5csW_eQvrH_lnwg2jQNrg16gm6bCUSaQwGJNZUM7L9CgOhlZ2r-6gb7UW8LZOXPJetQRQ8V1TN5LCp0A2ISDJDIAiVibFAVn7XYniZHnlP0NOf-LWgBeMhJ_Jw4zpngx0Ed0skeh1CIpoyOTgoiA1tBi0zozTTD2Xnve3T7HbLSZRQAdI2roRkldiNX5swYY-WIfWQER1MpeeqlpJbknUbCHHeG8ccqIkNBtbqlH_UQYhomma0yTLc9S4uHPbmjW53u1_A_4J7pqOcX9a2tawSq3EK25_q_buSeqhEK8F65T9CAPA62xM3Lnwv6AKww_3nKYJug7N07I76DGlf3-EvjO-f15k-yfq7DEPxiMo-d1JHtDmjozS2g7y4jv2z7W56fimGgroGUxAwh8k7DLYLvV_M1DJdJ4L_5Gdvua9XYkhvQGw1N5Pe5rwAOkEMdIYcAZ711Dvk7BUnQ5jyXM1Lz0pghYE-IoqpbVuce3ug5G_1MpySTGDmIXXAvQdQ9acrqkoc4Ztme3mxuEFm4mtnRAwQ5Zb1Wa_ixZX3StpyVROcURq--cXn9NI_lKvPo6H8N_rI2Av3xajmbU3RQxEB8tMEsd27RTqRpccL9gioaPCt4GIJwtqhWV79cjqqyds98GZvA7hVrI5ktkIeA8kgZ5uufc57PmmpgNl0u33zBjEwshAgZzdHLJPI1WQy8Au-ohzcoOvs2PC_OnOvzdwVhVoNTAaf4NdzzMwD4YsHcbv98c-0bb7I66DmYK3hSwYNhUc_vagGt0v_te5q3FaCbAhUJJ9NDRA5oSOjloHfJ282t2alKNJ4_i_ZbcQ4MKVEqs2ftOspSB-57ERMDp_OFxCJjezFjOrBEd3uyBnvw2EpuPns3O1kK4RmSzRPg8VAGDe6nntUQ-3gwDS9VoNr3qjxdi9oP17ux-mm7eqLrQafUPBIzk7yEwajrLdcIRLngoTP-kDx9oF_s6IHp7_FHLd3DT6Ygw6nHPBBReaeX0nAz8SJ_W2S-vWyMuNgmtbA5mtx0bz8dpZXPa_mcf5IJdlwroZ5D-nW6IeLSZ8rmDaEud43izlMBbSgm2cJOgHtz33g-bXSrooGD_f4dXmB1rvDVG018j1nGSFrBQBUW0JzOZRqanL0ur7RvrxSigTz72cLu2SDrG3Orek2Ln6Jqs79FpD0ZMUNL4SvDDeh4wMmv6n5bWPyaFkC60VuxeXbXbLIIaIERMcgvo5XheDbU7GFPCrfjLAFL8-5wlbT0EwXXlscMmw1vqVQwoDUY9xjw1U5jWocn4XKlF73dxLZTgPhwn85J0Jcw4DDE9SglJ0ezdS-n2ASsbOjvr_ZLKVBceiEgXmL18FDPSm6z2O7Bi_m-iMTj_mAjx9gWLQjWY883kdWOF4-3I4LvboUqW3i3HilajaBBoXb5RfEsn1JNNOvCTgHlz9jBS80bJ1nDH8aJ-cghAmCQsauiWB2u0RD6IQQacUV8Q5GV3QChLcJsIu05fJjIGgAJy1K0ILQHLufdDI2ECAQJsCvS5sPFQY7kUfKpiQxUxCTMkHHFFs77Po_xsbYoWUxII32VmusQzucLAtE77si7QeIJ6DhC-RgqC3tBCQu_v6PB6Odm5m61DFS3GMpQhst6CbqLPuWRIUVuAC6umu95Us-7b9h142EgI5s9iGjEthVRbbN74gWJeZ7BhgioLW3fDYD-OqbyXxPMsTV0-JrY61wa91dP-zEu-vNEICSmaSbnETc16cQ-7B_NcEoyDH3_Bfic7XjAOoZrQFunokhP5Ea9le73nxbiqDETKQFnYw0frFOVMmydqPqs2t6xVRylNkYNjvwlqnETxK9eUI2MJbMOo7J4zCWDEhtPSSBjFkdvt_skNZsa6nrTITgn1PWaug_Vz20h-sPiR2G9bRmLmChBspLBabuUVx5L9fvX-MmKtMOx-LyqEd38GajP28k-HA8FwspWv6xURbTtXxEvI8ud7J-kubQk.XogKKK4RUmiB4aMBpPV2YA'
 }
 
 async function getChatGPTReply(content) {
@@ -31,10 +31,24 @@ async function onMessage(msg) {
     return;
   }
 
-  if (room && isText) {
+  const isMemtion = await msg.mentionSelf()
+
+  if (room && isText && !isMemtion) {
     const topic = await room.topic();
     console.log(`Group name: ${topic} talker: ${await contact.name()} content: ${content}`);
-  } else if (isText) {
+  } else if (isMemtion && room && isText) {
+    if (config.AutoReply) {
+      if (content) {
+        console.log(`talker: ${alias} content: ${content.replace(/@.+\s/, '')}`);
+        const reply = await getChatGPTReply(content.replace(/@.+\s/, ''));
+        try {
+          await room.say(reply, contact);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+  } else if (isText && !isMemtion) {
     console.log(`talker: ${alias} content: ${content}`);
      if (config.AutoReply) {
       if (content) {
@@ -76,9 +90,10 @@ async function onFriendShip(friendship) {
   const frienddShipRe = /chatgpt|chat/
   if (friendship.type() === 2) {
     console.log('friendship.hello()----', friendship.hello());
-    if (frienddShipRe.test(friendship.hello())) {
-      await friendship.accept()
-    }
+    await friendship.accept()
+    // if (frienddShipRe.test(friendship.hello())) {
+    //   await friendship.accept()
+    // }
   }
 }
 
