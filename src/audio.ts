@@ -7,6 +7,7 @@ import request      from 'request'
 import Ffmpeg       from 'fluent-ffmpeg'
 import querystring  from 'querystring'
 import {path} from '@ffmpeg-installer/ffmpeg'
+import Mp32Wav from 'mp3-to-wav'
 Ffmpeg.setFfmpegPath(path);
 
 
@@ -35,6 +36,7 @@ function mp3ToWav(mp3Stream: Readable): NodeJS.ReadableStream {
 
   Ffmpeg(mp3Stream)
     .fromFormat('mp3')
+    .audioBitrate('128k')
     .toFormat('wav')
     .pipe(wavStream as any)
 
@@ -90,7 +92,7 @@ async function wavToText(wavStream: NodeJS.ReadableStream): Promise<string> {
 
   const options = {
     headers: {
-      'Content-Type': 'audio/wav; rate=8000',
+      'Content-Type': 'audio/wav; rate=16000',
     },
   }
 
