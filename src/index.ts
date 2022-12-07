@@ -1,5 +1,6 @@
 import { WechatyBuilder } from 'wechaty'
 import { ChatGPTAPI } from 'chatgpt'
+import pTimeout from 'p-timeout'
 import qrcodeTerminal from 'qrcode-terminal'
 
 const config = {
@@ -9,20 +10,37 @@ const config = {
 }
 
 async function getChatGPTReply(content) {
-  const api = new ChatGPTAPI({ sessionToken: config.ChatGPTSessionToken})
+  const api = new ChatGPTAPI({ sessionToken: config.ChatGPTSessionToken })
   // ensure the API is properly authenticated (optional)
   await api.ensureAuth()
   console.log('content: ', content);
   // send a message and wait for the response
-  const response = await api.sendMessage(content)
   //TODO: format response to compatible with wechat messages
+  const threeMinutesMs = 3 * 60 * 1000
+  const response = await pTimeout(
+    api.sendMessage(content),
+    {
+      milliseconds: threeMinutesMs,
+      message: 'ChatGPT timed out waiting for response'
+    }
+  )
   console.log('response: ', response);
   // response is a markdown-formatted string
   return response
 }
 
+async function replyMessage(contact, content) {
+  const reply = await getChatGPTReply(content);
+  try {
+    await contact.say(reply);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 async function onMessage(msg) {
   const contact = msg.talker(); 
+  const receiver = msg.to(); 
   const content = msg.text();
   const room = msg.room(); 
   const alias = await contact.alias() || await contact.name();
@@ -31,33 +49,18 @@ async function onMessage(msg) {
     return;
   }
 
-  const isMemtion = await msg.mentionSelf()
-
-  if (room && isText && !isMemtion) {
+  if (room && isText) {
     const topic = await room.topic();
     console.log(`Group name: ${topic} talker: ${await contact.name()} content: ${content}`);
-  } else if (isMemtion && room && isText) {
+    if (await msg.mentionSelf()) {
+      const [groupContent] = content.split(`@${receiver.name}`).filter(item => item.trim())
+      replyMessage(room, groupContent)
+    }
+  } else if (isText) {
+    console.log(`talker: ${alias} content: ${content}`);
     if (config.AutoReply) {
       if (content) {
-        console.log(`talker: ${alias} content: ${content.replace(/@.+\s/, '')}`);
-        const reply = await getChatGPTReply(content.replace(/@.+\s/, ''));
-        try {
-          await room.say(reply, contact);
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    }
-  } else if (isText && !isMemtion) {
-    console.log(`talker: ${alias} content: ${content}`);
-     if (config.AutoReply) {
-      if (content) {
-        const reply = await getChatGPTReply(content);
-        try {
-          await contact.say(reply);
-        } catch (e) {
-          console.error(e);
-        }
+        replyMessage(contact, content)
       }
     }
   }
@@ -89,11 +92,10 @@ function onLogout(user) {
 async function onFriendShip(friendship) {
   const frienddShipRe = /chatgpt|chat/
   if (friendship.type() === 2) {
-    console.log('friendship.hello()----', friendship.hello());
-    await friendship.accept()
     // if (frienddShipRe.test(friendship.hello())) {
     //   await friendship.accept()
     // }
+    await friendship.accept()
   }
 }
 

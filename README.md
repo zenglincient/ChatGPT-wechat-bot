@@ -2,6 +2,10 @@
 # ChatGPT wechat-bot
 
 ChatGPT webchart bot is a WeChat assistant based on NodeJS and webchaty. This tool is more convenient for you to  use ChatGPT, you just chat with it as a good friend or a housekeeper.
+
+## support
+1. can reply message when metioning your bot in room(group) https://github.com/AutumnWhj/ChatGPT-wechat-bot/issues/5
+
 ## How to use?
 
 1. Firstly, you should have an OpenAI account,  then follow the steps below to get your token. 
@@ -17,14 +21,19 @@ Refer to this article: [https://github.com/transitive-bullshit/chatgpt-api](http
 
 2. Now, you should fill your Token value into the ChatGPTSessionToken in the directory src/index.js， then run this project on local.
 ```javascript
-// install dependences
-npm i
+// install dependencies
+npm/pnpm i
+
+// dev
+npm/pnpm run dev
+
+// or 
 
 // build
-npm run build
-
+npm/pnpm run build
 // run lib
 node lib/bundle.esm.js
+
 ```
 
 3. you can see your logs, and scan qrcode to log in wechat.
