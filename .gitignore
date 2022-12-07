@@ -17,3 +17,4 @@
 *.memory-card.json
 package-lock.json
 lib
+*.mp3

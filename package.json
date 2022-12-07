@@ -7,7 +7,7 @@
   "module": "lib/bundle.esm.js",
   "type": "module",
   "scripts": {
-    "dev": "pnpm run build && node lib/bundle.esm.js",
+    "dev": "npm run build && node lib/bundle.esm.js",
     "build": "rimraf lib/* && rollup -c",
     "watch": "rimraf lib/* && rollup -c -w",
     "puppet-install": "node node_modules/.bin/wechaty-puppet-install"
@@ -22,7 +22,10 @@
   "author": "Jin",
   "license": "ISC",
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "chatgpt": "^1.2.0",
+    "ffmpeg": "^0.0.4",
+    "fluent-ffmpeg": "^2.1.2",
     "p-timeout": "^6.0.0",
     "qrcode-terminal": "^0.12.0",
     "typescript": "^4.9.3",
@@ -30,11 +33,12 @@
     "wechaty-puppet-wechat": "^1.18.4"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^21.0.2",
+    "@rollup/plugin-commonjs": "^23.0.3",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.1.3",
     "@rollup/plugin-typescript": "^10.0.1",
     "@types/node": "^18.11.11",
+    "nodeom": "^0.0.1",
     "rimraf": "^3.0.2",
     "rollup": "^2.68.0",
     "rollup-plugin-node-externals": "^4.0.0",

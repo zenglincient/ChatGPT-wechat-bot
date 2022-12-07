@@ -16,6 +16,7 @@ export default {
   output: [
     {
       file: pkg.module,
+      entryFileNames: 'entry-[name].js',
       format: 'esm',
       footer
     }

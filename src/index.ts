@@ -1,13 +1,43 @@
 import { WechatyBuilder } from 'wechaty'
 import { ChatGPTAPI } from 'chatgpt'
+import fs from 'fs'
+import path from 'path'
+import { dirname } from 'path';
 import pTimeout from 'p-timeout'
 import qrcodeTerminal from 'qrcode-terminal'
+import {speechToText} from './audio'
+import {
+  // createWriteStream,
+  createReadStream,
+}from 'fs'
 
 const config = {
   AutoReply: true,
   MakeFriend: true,
-  ChatGPTSessionToken: 'eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..gdbcxL8UcvQnbSGt.PK_mlVO6Ox2M2rVwx1vxf1p-nPx4F9NakLuFlfdaMtQIc7o_dL98-dLX4px8hEzHM-BLB3zMc5UOuvcHe-uF0E8Jsw2HOCSUUlUHRWAqhOyKR91mr3Z2zCJEEnC_-VQt_YUfoNwajVg7j6PozznL2MwngBVV10yBUHv-KPPE9ROO6l6VUT675hFEAznSmz0nov_cOo90ze0WIp5BR8oUZbDa1C8atgguQU4G3Gvvrf15iOoAm9MYhVkAi15ouXuIce6v-5csW_eQvrH_lnwg2jQNrg16gm6bCUSaQwGJNZUM7L9CgOhlZ2r-6gb7UW8LZOXPJetQRQ8V1TN5LCp0A2ISDJDIAiVibFAVn7XYniZHnlP0NOf-LWgBeMhJ_Jw4zpngx0Ed0skeh1CIpoyOTgoiA1tBi0zozTTD2Xnve3T7HbLSZRQAdI2roRkldiNX5swYY-WIfWQER1MpeeqlpJbknUbCHHeG8ccqIkNBtbqlH_UQYhomma0yTLc9S4uHPbmjW53u1_A_4J7pqOcX9a2tawSq3EK25_q_buSeqhEK8F65T9CAPA62xM3Lnwv6AKww_3nKYJug7N07I76DGlf3-EvjO-f15k-yfq7DEPxiMo-d1JHtDmjozS2g7y4jv2z7W56fimGgroGUxAwh8k7DLYLvV_M1DJdJ4L_5Gdvua9XYkhvQGw1N5Pe5rwAOkEMdIYcAZ711Dvk7BUnQ5jyXM1Lz0pghYE-IoqpbVuce3ug5G_1MpySTGDmIXXAvQdQ9acrqkoc4Ztme3mxuEFm4mtnRAwQ5Zb1Wa_ixZX3StpyVROcURq--cXn9NI_lKvPo6H8N_rI2Av3xajmbU3RQxEB8tMEsd27RTqRpccL9gioaPCt4GIJwtqhWV79cjqqyds98GZvA7hVrI5ktkIeA8kgZ5uufc57PmmpgNl0u33zBjEwshAgZzdHLJPI1WQy8Au-ohzcoOvs2PC_OnOvzdwVhVoNTAaf4NdzzMwD4YsHcbv98c-0bb7I66DmYK3hSwYNhUc_vagGt0v_te5q3FaCbAhUJJ9NDRA5oSOjloHfJ282t2alKNJ4_i_ZbcQ4MKVEqs2ftOspSB-57ERMDp_OFxCJjezFjOrBEd3uyBnvw2EpuPns3O1kK4RmSzRPg8VAGDe6nntUQ-3gwDS9VoNr3qjxdi9oP17ux-mm7eqLrQafUPBIzk7yEwajrLdcIRLngoTP-kDx9oF_s6IHp7_FHLd3DT6Ygw6nHPBBReaeX0nAz8SJ_W2S-vWyMuNgmtbA5mtx0bz8dpZXPa_mcf5IJdlwroZ5D-nW6IeLSZ8rmDaEud43izlMBbSgm2cJOgHtz33g-bXSrooGD_f4dXmB1rvDVG018j1nGSFrBQBUW0JzOZRqanL0ur7RvrxSigTz72cLu2SDrG3Orek2Ln6Jqs79FpD0ZMUNL4SvDDeh4wMmv6n5bWPyaFkC60VuxeXbXbLIIaIERMcgvo5XheDbU7GFPCrfjLAFL8-5wlbT0EwXXlscMmw1vqVQwoDUY9xjw1U5jWocn4XKlF73dxLZTgPhwn85J0Jcw4DDE9SglJ0ezdS-n2ASsbOjvr_ZLKVBceiEgXmL18FDPSm6z2O7Bi_m-iMTj_mAjx9gWLQjWY883kdWOF4-3I4LvboUqW3i3HilajaBBoXb5RfEsn1JNNOvCTgHlz9jBS80bJ1nDH8aJ-cghAmCQsauiWB2u0RD6IQQacUV8Q5GV3QChLcJsIu05fJjIGgAJy1K0ILQHLufdDI2ECAQJsCvS5sPFQY7kUfKpiQxUxCTMkHHFFs77Po_xsbYoWUxII32VmusQzucLAtE77si7QeIJ6DhC-RgqC3tBCQu_v6PB6Odm5m61DFS3GMpQhst6CbqLPuWRIUVuAC6umu95Us-7b9h142EgI5s9iGjEthVRbbN74gWJeZ7BhgioLW3fDYD-OqbyXxPMsTV0-JrY61wa91dP-zEu-vNEICSmaSbnETc16cQ-7B_NcEoyDH3_Bfic7XjAOoZrQFunokhP5Ea9le73nxbiqDETKQFnYw0frFOVMmydqPqs2t6xVRylNkYNjvwlqnETxK9eUI2MJbMOo7J4zCWDEhtPSSBjFkdvt_skNZsa6nrTITgn1PWaug_Vz20h-sPiR2G9bRmLmChBspLBabuUVx5L9fvX-MmKtMOx-LyqEd38GajP28k-HA8FwspWv6xURbTtXxEvI8ud7J-kubQk.XogKKK4RUmiB4aMBpPV2YA'
+  ChatGPTSessionToken: 'eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..cSSXLYwEEiZ0t2O1.bVrSYUrz3JnpGgIhSST-_FkDR6atDl9A7dtFBHKt87cZTZe4vyABC_RvrWtbBEen9u3OzIz0WObm4ebVvTMlPooMC-g8vZBdY9rGmOtn82w8GKnyfsQtiKpieCPcJmuprBQgA8ZvCcykSA907T0TVxlZQtb6EdYfHgFen0ncCjCYcPrGcoLap0mLhXr3agsZFagIPN-dqPD1ZBFqfpCQRfYsCcHDfIuCJ3yvxsHAKzIV4whhQzSQxA9AobRFL6XlfQgsXb_dOA57SsQBjFcuRGmqYOaTKXCGYYJM5f8oDudkMpN7QcxhgEVXY27x-qv090eS8hMVb8e8F0KSHEykn7nfJraPXz0p07iGndaBOMc4MEZxVMczpedgwsn7WvmuYh0-uxkOr1FXa6hsyvqmMTVwnWMx57JpGYyP7p9jCoDDyMiCi77t4ioEzviwRo6IrSMKkQbSPtE1VaXlP-uhzWeaJegguGLW0oPM_JMBV1AP7sDpbSpEzlReh_xJaCNLcGj77gm7ORy3zG_ncguZPVMrGoC_0jdp4rEYWHgCpwvKsyS3vs1iIw8_q0rM3tpgYuTRrY3AEyKVKkds21ppiAvraNHYMSfdQgr6Cg8lNPwz8lSExJUwhyw1RBzfstKcvTiHE5mhppPcgn_MHwUeCH-0KhbqCNAawnFvsOwat2hDv-PV2I0PW_h_e7lpETAdZ2qTNjP3XiEXUQZ-Y8Xm1C0cODtHnJggbbI66_x9BBZIgYOCO74hN7EOJCnm1I-DapGYZqUvm30KG-D-T3AWKFqOlIfl1wYo_mWhpPeesf9IMG1pjMHo8EFt-z3DTehsTyFXXyjP-4h7KLkqlO5iXjxQ-4D4X2K4uhSD-7DXlz1ZPXc9k4oLYCl55UmJ6LeqzjLbKNBe7l5uyxX9m7yR2gKjz0uLcCZIIdSpY5jRdX5Z4zVqZdyTE5lo_5j6bUPBKZ9HWRaHSy9a8SyL6-7hMYXzKiOUhxgfFi98cZXJhbQAVaYtf0UGqFUgOgLiVCzVpX_xTHz0dqewgbzgyjCpJ8HDlVSqcTI49_lyUMgaJCB28uv_HAnf-RFkVqYB35HG7dOgLATwNz__gEdrR6ObZUT2UIW4gfAP031S0AwcijuS9c0iQfjAzGSytnfXQRnPLJLwoL1le5m6QEvjITTDky7lBflLk5i7yqPaQg7y4bzRn8XG4rinPStPtdghs8eKJ_bQ8CDfRPoLPlZEB61wBNPatoHVvAjoZix8mYXIdfVVq8zcd-48cdihIW3HR0_FmY95yRqllM3ZtR6Ycpgk_mLQXWAyL4wpo9e_eG9jH3rROYbRsrPNICZvzyYY8S4FaqDvkY0Uxt4Nx0Qk5eyQjhxREVyqtTBnliXgL4kBABBsA-0mlQPQbaz1LnDP8_tBYJbyZi7VYm_7AvAq_n0dFQp0TaB1rkc1L0kPn1T2OcIN_sW7R8lwJtTDlz7luYig7d4VNvO38yZnsuCTLtUFnmKgyv9Jk1DYly3wp0IDrzc3M_tlw-KYjDo1tcnW9itqgxBMYa72EyE-nc9HYsm3b__Y2RTuNr4KnL6rZPawHT_OytKKb65yJyYrJEA2NohQ_svCEpv9B5KPylaoPmHINJX-mcwDMxBfFvLiSj2_I3rIKEQejxyYrFKfy1r-n-sCTafdOEWfdJ-GvXylyfU_BQm9axdla-S0TlAZpvqCAsE4PEV3e_pzulpW4Q4emqRdU1HZ9DOxIouLFBzQr54qHXYZOucbaK2Gc41tfOWAJ27azuX7bX_TQzSRobQpIjK6rFLDoNxqxjcnRFNARTZGZPFMDPvTSKerWWfPjQRfzOXQ4H2z7XvUrXVsT2GrKkHd505lbxcmP6-XfaYQo2PbEvTB5pgeLLDPJmOaSiLQttFMXMvf038xZqS4dF4JGd46mnEmgCXIgFikL3HE9aTMbHXD3xXD1uDWvqqsfbinyPsd1xYI0-zw7pltekl9jQvlQo-7D63AdreE0kS0mTszX3JYYT9Yr8GexN0oi7doI-lMMboNOZXN7XX5mCLMOEmsXCz4xNd6KHYLebVN4Fj2q-DVQAkHetiXKi62NPAgZD6AlzKsmeNu3RIXZU7EXsMvhu0BK6cZCSbSyabLIfv6AY1RTW-gaW240LAJsymJayKKDARcVU-bMGD1_1_cUKOqFA0Y-wWDEC8vQ1z4A3HTQuV6F8YXjlsfQhHkDF9y37u0PONtbtFUoeS77X8kRfzJYOu0NfCs._DCbIRCOWFEsx3fspL62KA'
 }
+
+
+const __dirname = path.resolve();
+
+console.log(path.join(__dirname, 'ss.mp3'))
+
+
+
+// const getToken = () => {
+//   axios.get(
+//     `https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id=hH8MQRrZvUxFLuS59GxcwZQ2&client_secret=PBDmKGwwnKs8Ay84oAlW8Eur3TI3tl6O`
+//   ).then(res => {
+//     console.log(res.data);
+//     process.env.baiduToken = res.data.access_token;
+//   })
+// }
+// getToken();
+
+// setInterval(() => {
+//   getToken()
+// }, 1000 * 60 * 60 * 12 * 14)
+
 
 async function getChatGPTReply(content) {
   const api = new ChatGPTAPI({ sessionToken: config.ChatGPTSessionToken })
@@ -16,23 +46,26 @@ async function getChatGPTReply(content) {
   console.log('content: ', content);
   // send a message and wait for the response
   //TODO: format response to compatible with wechat messages
-  const threeMinutesMs = 3 * 60 * 1000
-  const response = await pTimeout(
+  const threeMinutesMs = 2 * 60 * 1000
+  let response
+  response = await pTimeout(
     api.sendMessage(content),
     {
       milliseconds: threeMinutesMs,
       message: 'ChatGPT timed out waiting for response'
     }
-  )
+  ).catch(e => {
+    response = '欧。超时了，你要不要在问我一次'
+  })
   console.log('response: ', response);
   // response is a markdown-formatted string
   return response
 }
 
-async function replyMessage(contact, content) {
+async function replyMessage(contact, content)  {
   const reply = await getChatGPTReply(content);
   try {
-    await contact.say(reply);
+    await contact.say(reply, contact);
   } catch (e) {
     console.error(e);
   }
@@ -45,8 +78,21 @@ async function onMessage(msg) {
   const room = msg.room(); 
   const alias = await contact.alias() || await contact.name();
   const isText = msg.type() === bot.Message.Type.Text;
+  const isAudio = msg.type() === bot.Message.Type.Audio;
   if (msg.self()) {
     return;
+  }
+
+  if (isAudio && !room) {
+    const msgFile = await msg.toFileBox()
+    const filename = msgFile.name
+    await msgFile.toFile(filename)
+
+
+    const mp3Stream = createReadStream(path.join(__dirname, filename))
+    const content = await speechToText(mp3Stream)
+    contact.say(`识别到您的语音输入为：${content}`)
+    replyMessage(contact, content)
   }
 
   if (room && isText) {
@@ -122,5 +168,4 @@ bot
   .start()
   .then(() => console.log('Start to log in wechat...'))
   .catch((e) => console.error(e));
-
 
