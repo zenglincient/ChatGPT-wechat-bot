@@ -6,8 +6,8 @@ import { dirname } from 'path';
 import pTimeout from 'p-timeout'
 import qrcodeTerminal from 'qrcode-terminal'
 import {speechToText} from './audio'
+import axios from 'axios'
 import {
-  // createWriteStream,
   createReadStream,
 }from 'fs'
 
@@ -20,23 +20,19 @@ const config = {
 
 const __dirname = path.resolve();
 
-console.log(path.join(__dirname, 'ss.mp3'))
+const getBaiduToken = () => {
+  axios.get(
+    `https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id=hH8MQRrZvUxFLuS59GxcwZQ2&client_secret=PBDmKGwwnKs8Ay84oAlW8Eur3TI3tl6O`
+  ).then(res => {
+    console.log(res.data);
+    process.env.baiduToken = res.data.access_token;
+  })
+}
+getBaiduToken();
 
-
-
-// const getToken = () => {
-//   axios.get(
-//     `https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id=hH8MQRrZvUxFLuS59GxcwZQ2&client_secret=PBDmKGwwnKs8Ay84oAlW8Eur3TI3tl6O`
-//   ).then(res => {
-//     console.log(res.data);
-//     process.env.baiduToken = res.data.access_token;
-//   })
-// }
-// getToken();
-
-// setInterval(() => {
-//   getToken()
-// }, 1000 * 60 * 60 * 12 * 14)
+setInterval(() => {
+  getBaiduToken()
+}, 1000 * 60 * 60 * 12 * 14)
 
 
 async function getChatGPTReply(content) {
@@ -88,11 +84,12 @@ async function onMessage(msg) {
     const filename = msgFile.name
     await msgFile.toFile(filename)
 
-
     const mp3Stream = createReadStream(path.join(__dirname, filename))
     const content = await speechToText(mp3Stream)
     contact.say(`识别到您的语音输入为：${content}`)
     replyMessage(contact, content)
+    fs.unlinkSync(filename)
+    return
   }
 
   if (room && isText) {

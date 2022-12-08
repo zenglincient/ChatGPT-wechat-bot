@@ -7,7 +7,6 @@ import request      from 'request'
 import Ffmpeg       from 'fluent-ffmpeg'
 import querystring  from 'querystring'
 import {path} from '@ffmpeg-installer/ffmpeg'
-import Mp32Wav from 'mp3-to-wav'
 Ffmpeg.setFfmpegPath(path);
 
 
@@ -84,7 +83,7 @@ async function wavToText(wavStream: NodeJS.ReadableStream): Promise<string> {
   const params = {
     'cuid': 'wechaty—asui',
     'dev_pid': 1537,
-    'token': '24.9a3d5c0f1a1f623afc090a995dcbf0cb.2592000.1673001909.282335-28899264',
+    'token': process.env.baiduToken,
   }
 
   const apiUrl = 'http://vop.baidu.com/server_api?'
