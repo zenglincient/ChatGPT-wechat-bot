@@ -20,19 +20,19 @@ const config = {
 
 const __dirname = path.resolve();
 
-const getBaiduToken = () => {
-  axios.get(
-    `https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id=hH8MQRrZvUxFLuS59GxcwZQ2&client_secret=PBDmKGwwnKs8Ay84oAlW8Eur3TI3tl6O`
-  ).then(res => {
-    console.log(res.data);
-    process.env.baiduToken = res.data.access_token;
-  })
-}
-getBaiduToken();
+// const getBaiduToken = () => {
+//   axios.get(
+//     `https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id=hH8MQRrZvUxFLuS59GxcwZQ2&client_secret=PBDmKGwwnKs8Ay84oAlW8Eur3TI3tl6O`
+//   ).then(res => {
+//     console.log(res.data);
+//     process.env.baiduToken = res.data.access_token;
+//   })
+// }
+// getBaiduToken();
 
-setInterval(() => {
-  getBaiduToken()
-}, 1000 * 60 * 60 * 12 * 14)
+// setInterval(() => {
+//   getBaiduToken()
+// }, 1000 * 60 * 60 * 12 * 14)
 
 
 async function getChatGPTReply(content) {
