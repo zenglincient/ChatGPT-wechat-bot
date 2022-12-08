@@ -99,6 +99,7 @@ async function wavToText(wavStream: NodeJS.ReadableStream): Promise<string> {
     wavStream.pipe(request.post(apiUrl, options, (err, _ /* httpResponse */, body) => {
       // "err_msg":"success.","err_no":0,"result":["这是一个测试测试语音转文字，"]
       if (err) {
+        console.log('出错啦！', err)
         return reject(err)
       }
       try {
