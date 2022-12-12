@@ -1,16 +1,3 @@
-*/.settings
-*/target
-*target
-*/.settings
-*/target
-*.project
-*.classpath
-*.idea
-*.vscode
-*.iml
-*.DS_Store
-/build/
-/bin/
 *node_modules
 */log
 .env
@@ -18,3 +5,4 @@
 package-lock.json
 lib
 *.mp3
+lib
