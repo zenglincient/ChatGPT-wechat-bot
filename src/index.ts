@@ -1,34 +1,15 @@
-import { WechatyBuilder } from 'wechaty'
-import { ChatGPTAPI } from 'chatgpt'
-import fs from 'fs'
-import path from 'path'
-import { dirname } from 'path';
-import pTimeout from 'p-timeout'
-import qrcodeTerminal from 'qrcode-terminal'
-import { speechToText } from './audio'
-import axios from 'axios'
-import {
-  createReadStream,
-} from 'fs'
+import { WechatyBuilder } from 'wechaty';
+import fs from 'fs';
+import path from 'path';
+import qrcodeTerminal from 'qrcode-terminal';
+import { speechToText, initAudio } from './audio';
+import { createReadStream } from 'fs';
 import config from './config';
 import { replyMessage } from './chatgpt';
 
 const __dirname = path.resolve();
 
-const getBaiduToken = () => {
-  axios.get(
-    `https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id=hH8MQRrZvUxFLuS59GxcwZQ2&client_secret=PBDmKGwwnKs8Ay84oAlW8Eur3TI3tl6O`
-  ).then(res => {
-    console.log(res.data);
-    process.env.baiduToken = res.data.access_token;
-  })
-}
-getBaiduToken();
-
-setInterval(() => {
-  getBaiduToken()
-}, 1000 * 60 * 60 * 12 * 14)
-
+initAudio();
 
 async function onMessage(msg) {
   const contact = msg.talker();
@@ -44,16 +25,16 @@ async function onMessage(msg) {
   }
 
   if (isAudio && !room) {
-    const msgFile = await msg.toFileBox()
-    const filename = msgFile.name
-    await msgFile.toFile(filename)
+    const msgFile = await msg.toFileBox();
+    const filename = msgFile.name;
+    await msgFile.toFile(filename);
 
-    const mp3Stream = createReadStream(path.join(__dirname, filename))
-    const content = await speechToText(mp3Stream)
-    contact.say(`识别到您的语音输入为：${content}`)
-    replyMessage(contact, content, contactId)
-    fs.unlinkSync(filename)
-    return
+    const mp3Stream = createReadStream(path.join(__dirname, filename));
+    const content = await speechToText(mp3Stream);
+    contact.say(`识别到您的语音输入为：${content}`);
+    replyMessage(contact, content, contactId);
+    fs.unlinkSync(filename);
+    return;
   }
 
   if (room && isText) {
@@ -120,7 +101,7 @@ async function onFriendShip(friendship) {
     // if (frienddShipRe.test(friendship.hello())) {
     //   await friendship.accept()
     // }
-    await friendship.accept()
+    await friendship.accept();
   }
 }
 

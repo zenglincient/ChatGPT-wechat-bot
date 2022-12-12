@@ -1,18 +1,32 @@
-import {
-  PassThrough,
-  Readable,
-}from 'stream'
+import { PassThrough, Readable } from 'stream';
 
-import request      from 'request'
-import Ffmpeg       from 'fluent-ffmpeg'
-import querystring  from 'querystring'
-import {path} from '@ffmpeg-installer/ffmpeg'
+import request from 'request';
+import Ffmpeg from 'fluent-ffmpeg';
+import querystring from 'querystring';
+import { path } from '@ffmpeg-installer/ffmpeg';
+import axios from 'axios';
 Ffmpeg.setFfmpegPath(path);
 
+const getBaiduToken = () => {
+  axios
+    .get(
+      `https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id=hH8MQRrZvUxFLuS59GxcwZQ2&client_secret=PBDmKGwwnKs8Ay84oAlW8Eur3TI3tl6O`
+    )
+    .then((res) => {
+      console.log(res.data);
+      process.env.baiduToken = res.data.access_token;
+    });
+};
 
+export const initAudio = () => {
+  getBaiduToken();
+  setInterval(() => {
+    getBaiduToken();
+  }, 1000 * 60 * 60 * 12 * 14);
+};
 
 export async function speechToText(mp3Stream: Readable): Promise<string> {
-  const wavStream = mp3ToWav(mp3Stream)
+  const wavStream = mp3ToWav(mp3Stream);
 
   // const textStream = wavToText(wavStream)
 
@@ -21,17 +35,16 @@ export async function speechToText(mp3Stream: Readable): Promise<string> {
   // })
 
   try {
-    const text = await wavToText(wavStream)
-    return text
-
+    const text = await wavToText(wavStream);
+    return text;
   } catch (e) {
-    console.log(e)
-    return ''
+    console.log(e);
+    return '';
   }
 }
 
 function mp3ToWav(mp3Stream: Readable): NodeJS.ReadableStream {
-  const wavStream = new PassThrough()
+  const wavStream = new PassThrough();
 
   Ffmpeg(mp3Stream)
     .fromFormat('mp3')
@@ -52,11 +65,11 @@ function mp3ToWav(mp3Stream: Readable): NodeJS.ReadableStream {
     // .on('end', function() {
     //   console.log('Finished processing');
     // })
-    .on('error', function(err: Error /*, stdout, stderr */) {
-      console.log('Cannot process video: ' + err.message)
-    })
+    .on('error', function (err: Error /*, stdout, stderr */) {
+      console.log('Cannot process video: ' + err.message);
+    });
 
-  return wavStream
+  return wavStream;
 }
 
 /**
@@ -81,38 +94,39 @@ function mp3ToWav(mp3Stream: Readable): NodeJS.ReadableStream {
  */
 async function wavToText(wavStream: NodeJS.ReadableStream): Promise<string> {
   const params = {
-    'cuid': 'wechaty—asui',
-    'dev_pid': 1537,
-    'token': process.env.baiduToken,
-  }
+    cuid: 'wechaty—asui',
+    dev_pid: 1537,
+    token: process.env.baiduToken,
+  };
 
-  const apiUrl = 'https://vop.baidu.com/server_api?'
-                + querystring.stringify(params)
+  const apiUrl =
+    'https://vop.baidu.com/server_api?' + querystring.stringify(params);
 
   const options = {
     headers: {
       'Content-Type': 'audio/wav; rate=16000',
     },
-  }
+  };
 
   return new Promise<string>((resolve, reject) => {
-    wavStream.pipe(request.post(apiUrl, options, (err, _ /* httpResponse */, body) => {
-      // "err_msg":"success.","err_no":0,"result":["这是一个测试测试语音转文字，"]
-      if (err) {
-        console.log('出错啦！', err)
-        return reject(err)
-      }
-      try {
-        const obj = JSON.parse(body)
-        if (obj.err_no !== 0) {
-          throw new Error(obj.err_msg)
+    wavStream.pipe(
+      request.post(apiUrl, options, (err, _ /* httpResponse */, body) => {
+        // "err_msg":"success.","err_no":0,"result":["这是一个测试测试语音转文字，"]
+        if (err) {
+          console.log('出错啦！', err);
+          return reject(err);
         }
-        console.log(obj.result[0])
-        return resolve(obj.result[0])
-
-      } catch (err) {
-        return reject(err)
-      }
-    }))
-  })
+        try {
+          const obj = JSON.parse(body);
+          if (obj.err_no !== 0) {
+            throw new Error(obj.err_msg);
+          }
+          console.log(obj.result[0]);
+          return resolve(obj.result[0]);
+        } catch (err) {
+          return reject(err);
+        }
+      })
+    );
+  });
 }
